@@ -26,44 +26,88 @@ def tokenize(text):
     return clean_tokens
 
 # load data
-engine = create_engine('sqlite:///../data/YourDatabaseName.db')
-df = pd.read_sql_table('YourTableName', engine)
+engine = create_engine('sqlite:///../data/DisasterResponse.db')
+df = pd.read_sql_table('df', engine)
 
 # load model
-model = joblib.load("../models/your_model_name.pkl")
+model = joblib.load("../models/classifier.pkl")
 
 
 # index webpage displays cool visuals and receives user input text for model
 @app.route('/')
 @app.route('/index')
-def index():
-    
+def index()
+
     # extract data needed for visuals
     # TODO: Below is an example - modify to extract data for your own visuals
     genre_counts = df.groupby('genre').count()['message']
     genre_names = list(genre_counts.index)
+    positive_counts = df.drop(['id','message','original','genre'], axis=1)
+    pct_positive = positive_counts.sum()/positive_counts.count()
+    pct_positive_names = list(pct_positive.index)
+
+    positive_counts2 = df.drop(['id','message','original'], axis=1).groupby('genre')
+    pct_positive2 = positive_counts2.sum()/positive_counts2.count()
+    pct_positive_names2 = list(pct_positive2.index)
+    
+    bc_counts = df.drop(['id','message','original'], axis=1).groupby('genre').sum()
+    bc_names = list(bc_counts.columns)
+    bc_direct = list(bc_counts.loc['direct'])
+    bc_news = list(bc_counts.loc['news'])
+    bc_social = list(bc_counts.loc['social'])
     
     # create visuals
     # TODO: Below is an example - modify to create your own visuals
     graphs = [
-        {
+       
+         {
             'data': [
                 Bar(
-                    x=genre_names,
-                    y=genre_counts
+                    x=pct_positive_names,
+                    y=pct_positive
                 )
             ],
 
             'layout': {
-                'title': 'Distribution of Message Genres',
+                'title': 'Percent Messages Meeting Criteria',
                 'yaxis': {
-                    'title': "Count"
+                    'title': "Percent Matching"
                 },
                 'xaxis': {
-                    'title': "Genre"
+                    'title': "Variable"
+                }
+            }
+        },
+        {
+            'data': [
+                Bar(
+                    x=bc_names,
+                    y=bc_direct,
+                    name='direct'
+                ),
+                Bar(
+                    x=bc_names,
+                    y=bc_news,
+                    name='news'
+                ),
+                Bar(
+                    x=bc_names,
+                    y=bc_social,
+                    name='social'
+                )
+            ],
+
+            'layout': {
+                'title': 'Counts Matching by Genre',
+                'yaxis': {
+                    'title': "Count Matching"
+                },
+                'xaxis': {
+                    'title': "Variable"
                 }
             }
         }
+    
     ]
     
     # encode plotly graphs in JSON
@@ -93,7 +137,7 @@ def go():
 
 
 def main():
-    app.run(host='0.0.0.0', port=3001, debug=True)
+    app.run(host='0.0.0.0', port=3000, debug=True)
 
 
 if __name__ == '__main__':
