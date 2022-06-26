@@ -1,16 +1,60 @@
+# import libraries
 import sys
+import pandas as pd
+import re
 
 
 def load_data(messages_filepath, categories_filepath):
-    pass
+#     load datasets and merge
+    msg = pd.read_csv(messages_filepath)
+    ctg = pd.read_csv(categories_filepath)
+    df = pd.merge(msg, ctg, on = 'id')
+    return df
 
 
 def clean_data(df):
-    pass
+#     create a dataframe of the 36 individual category columns
+    categories = df['categories'].str.split(";",expand=True)
+    
+# select the first row of the categories dataframe
+    row = categories.iloc[0]
+    
+# use this row to extract a list of new column names for categories.
+# one way is to apply a lambda function that takes everything 
+# up to the second to last character of each string with slicing
+    category_colnames = []
+    for item in row:
+        test = re.findall(r"[a-zA-Z_]+",item)
+        category_colnames.append(test[0])
+    print(category_colnames)
+    
+# rename the columns of `categories`
+    categories.columns = category_colnames  
+    
+    for column in categories:
+    # set each value to be the last character of the string
+        categories[column] = categories[column].apply(lambda x: int(x[-1]))
+        
+    # drop the original categories column from `df`
+    df.drop(['categories'], inplace = True, axis=1)
 
+# concatenate the original dataframe with the new `categories` dataframe
+    df = pd.concat([df,categories], axis=1)
 
+#drop duplicates
+    df = df.drop_duplicates()
+    
+    return df
+# df[['id', 'message', 'original', 'genre', 'related','request']]
+    
+  
+    
 def save_data(df, database_filename):
-    pass  
+# Save out dataset
+    from sqlalchemy import create_engine
+    database_filepath = 'sqlite:////home/workspace/'+ str(database_filename)
+    engine = create_engine(database_filepath)
+    df.to_sql('df', engine, if_exists = 'replace', index=False)   
 
 
 def main():
