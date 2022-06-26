@@ -13,4 +13,4 @@
 
 3. Go to http://0.0.0.0:3001/
 
-4. This is a test
+4. This is a test.
