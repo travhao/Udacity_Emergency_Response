@@ -16,6 +16,11 @@ Finally, the saved prediction model gets used in an app that shows a couple of g
 data.  On the application you can also enter your own sentence/comment and see how the application would
 assign it out based upon the model.
 
+The Jupyter Notebooks used for exploration purposes are found in the "ETL Pipeline Preparation.ipynb" and
+"ML Pipeline Preparation.ipynb" notebooks.  Note that some of the code ended up changing between
+the notebook and what actually  gets used.  For example, in the ML Pipeline Preparation Notebook I also
+tried using a random forest classifier.
+
 
 ### Instructions:
 1. Run the following commands in the project's root directory to set up your database and model.
