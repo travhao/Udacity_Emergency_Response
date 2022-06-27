@@ -21,6 +21,11 @@ The Jupyter Notebooks used for exploration purposes are found in the "ETL Pipeli
 the notebook and what actually  gets used.  For example, in the ML Pipeline Preparation Notebook I also
 tried using a random forest classifier.
 
+######Credit Section
+Most of the code I used came from examples provided in the Udacity Course Material.  On occasion I went
+out to stack overflow or other sites to learn about functions. However, I don't believe I used any of their
+material directly so their sites aren't referenced.
+
 
 ### Instructions:
 1. Run the following commands in the project's root directory to set up your database and model.
