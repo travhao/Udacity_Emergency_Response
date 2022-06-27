@@ -34,7 +34,8 @@ def clean_data(df):
     for column in categories:
     # set each value to be the last character of the string
         categories[column] = categories[column].apply(lambda x: int(x[-1]))
-        
+
+   
     # drop the original categories column from `df`
     df.drop(['categories'], inplace = True, axis=1)
 
@@ -43,6 +44,10 @@ def clean_data(df):
 
 #drop duplicates
     df = df.drop_duplicates()
+
+#There are around 200 columns in the related that are not binary (2).  Dropping
+# these records to make all things binary.  Small percentage of rows so should be okay.
+    df = df.loc[df['related']<2] 
     
     return df
 # df[['id', 'message', 'original', 'genre', 'related','request']]
